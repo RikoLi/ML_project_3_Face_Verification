@@ -1,6 +1,6 @@
 # ML_project_3_Face_Verification
 For ZJU Machine learning course group work project 3.
-> 注：不定期更新，上次更新为2018.10.16
+> 注：不定期更新，上次更新为2018.10.19
 
 ---
 
@@ -57,3 +57,28 @@ CUDA用于给NVIDIA公司的GPU加速提供平台，如果你们的显卡是NVID
 另外还要注意，如果显卡名是NVIDIA系带M字样的笔记本专用卡，请慎用GPU加速，Keras配置时给出的解释是有烧坏卡的风险...（我的破笔记本就是M系的卡...不过我还是装了CUDA...）
 
 CUDA配置比较麻烦，请务必根据需要与否配置。
+
+## 关于Git同步
+emmm，虽然我觉得应该没问题了，但是就那么几条指令还是在这里记一下吧。
+
+* 本地仓库初始化
+    ```bash
+    git init
+    ```
+* 添加更改到commit
+    ```bash
+    git add .
+    git commit -m "first commit"
+    ```
+* 关联到远程库
+    ```bash
+    git remote add origin 你的远程库地址
+    ```
+* 远程库与本地同步合并
+    ```bash
+    git pull --rebase origin master
+    ```
+* 将本地库内容推送到远程
+    ```bash
+    git push -u origin master
+    ```
