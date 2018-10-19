@@ -62,23 +62,55 @@ CUDA配置比较麻烦，请务必根据需要与否配置。
 emmm，虽然我觉得应该没问题了，但是就那么几条指令还是在这里记一下吧。
 
 * 本地仓库初始化
-    ```bash
+    ```batch
     git init
     ```
 * 添加更改到commit
-    ```bash
+    ```batch
     git add .
     git commit -m "first commit"
     ```
 * 关联到远程库
-    ```bash
+    ```batch
     git remote add origin 你的远程库地址
     ```
 * 远程库与本地同步合并
-    ```bash
+    ```batch
     git pull --rebase origin master
     ```
 * 将本地库内容推送到远程
-    ```bash
+    ```batch
     git push -u origin master
     ```
+
+## 自行编写的函数接口说明
+提前写了一下数据读取、格式转换的接口，注意你的Python上一定要有下面几个库：
+* matplotlib
+* numpy
+* pillow
+
+如果Python用的是anaconda版本的，应该已经预先装好了，查看库安装列表请在控制台里输入：
+```batch
+conda list
+```
+
+### 接口
+```python
+showPic(pic_path)
+```
+无返回值，显示数据集中路径为```pic_path```的图片。该参数一般来自数据集提供的索引文件。
+
+```python
+readIndex(index_file_name)
+```
+返回list，参数为数据集文件夹内提供的索引.txt文件的路径。该函数将原始数据集转换成一个list，list每个元素为字符串，内容为一张图片的相对路径和类别标签。
+
+```python
+genDataDict(index_list)
+```
+返回list，list的每个元素为dict，参数使用```readIndex()```的返回值。该函数返回dict的格式为`{pic_path:<pic_path>, category:<pic_category>}`
+
+```python
+path2matr(pic_path)
+```
+返回numpy数组，参数使用`genDataDict()`所返回列表字典中的"pic_path"键对应值。该函数获取图片矩阵，并以numpy数组形式返回，用于后续对图片进行数据处理。
