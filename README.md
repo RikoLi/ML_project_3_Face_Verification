@@ -95,6 +95,8 @@ conda list
 ```
 
 ### 接口
+> 注意：函数中文件调用目录请自己修改。
+
 ```python
 showPic(pic_path)
 ```
