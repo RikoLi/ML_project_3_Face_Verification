@@ -1,6 +1,6 @@
 # ML_project_3_Face_Verification
 For ZJU Machine learning course group work project 3.
-> 注：不定期更新，上次更新为2018.10.19
+> 注：不定期更新，上次更新为2018.10.20
 
 ---
 
