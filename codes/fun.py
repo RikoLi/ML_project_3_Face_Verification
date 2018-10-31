@@ -6,13 +6,21 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
 
+# 接口使用样例
+# index_list = fun.readIndex('train.txt')
+# dict_list = fun.genDataDict(index_list)
+# pic = dict_list[0]['pic_path']
+# fun.showPic(pic)
+
+
+
 # 显示数据集中某张图片
 def showPic(pic_path):
     '''
     return: none\n
     pic_path: 数据集字典列表中某张图的路径，对应字典键pic_path
     '''
-    img = mpimg.imread('../dataset/CASIA-WebFace-Align-96/'+pic_path)
+    img = mpimg.imread('E:/study/grade3_winter/Machine_learning/Homework_Undergraduate/Programming_Assignment/Assignment03_FaceVerification/dataset/CASIA-WebFace-Align-96/'+pic_path)
     plt.imshow(img)
     plt.show()
 
@@ -24,7 +32,7 @@ def readIndex(index_file_name):
     '''
     index_list = []
     new_index_list = []
-    with open('./temp/'+index_file_name, 'r') as f:
+    with open('../temp/'+index_file_name, 'r') as f:
         index_list = f.readlines()
     for each in index_list:
         new_str = each.replace('\n', '')
@@ -50,5 +58,5 @@ def path2matr(pic_path):
     return: numpy数组\n
     pic_path: 数据集字典列表中某张图的路径，对应字典键pic_path
     '''
-    img = mpimg.imread('../dataset/CASIA-WebFace-Align-96/'+pic_path)
+    img = mpimg.imread('E:/study/grade3_winter/Machine_learning/Homework_Undergraduate/Programming_Assignment/Assignment03_FaceVerification/dataset/CASIA-WebFace-Align-96/'+pic_path)
     return img
