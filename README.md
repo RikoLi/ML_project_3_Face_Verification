@@ -1,6 +1,6 @@
 # ML_project_3_Face_Verification
 For ZJU Machine learning course group work project 3.
-> 注：不定期更新，上次更新为2018.10.20
+> 注：不定期更新，上次更新为2018.11.1
 
 ---
 
@@ -116,3 +116,6 @@ genDataDict(index_list)
 path2matr(pic_path)
 ```
 返回numpy数组，参数使用`genDataDict()`所返回列表字典中的"pic_path"键对应值。该函数获取图片矩阵，并以numpy数组形式返回，用于后续对图片进行数据处理。
+
+### 数据集划分
+用法详见data_division.py，用来将原始WebFace总数据集划分成训练集和验证集。
