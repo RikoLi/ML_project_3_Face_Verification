@@ -34,27 +34,27 @@ for each in val_index_list:
     pic_name = re.findall(pattern, each)[0]
     val_directory_list.append(temp[0].replace(pic_name, ''))
     val_label_list.append(temp[1])
-    val_name_list.append(pic_name)
+    val_name_list.append(pic_name) 
 
 # 图片划分为训练集和验证集
 print('划分训练集中...')
 for i in range(len(train_directory_list)):
-    if not os.path.exists('../../dataset/train_data/'+train_directory_list[i]):
-        os.mkdir('../../dataset/train_data/'+train_directory_list[i])
+    if not os.path.exists('../../dataset/train_data/'+train_label_list[i]):
+        os.mkdir('../../dataset/train_data/'+train_label_list[i])
     with open('../../dataset/CASIA-WebFace-Align-96/'+train_directory_list[i]+'/'+train_name_list[i], 'rb') as fc:
         f = fc.read()   # 复制
-        with open('../../dataset/train_data/'+train_directory_list[i]+'/'+train_name_list[i], 'wb') as fp:
+        with open('../../dataset/train_data/'+train_label_list[i]+'/'+train_name_list[i], 'wb') as fp:
             fp.write(f) # 粘贴
     print('Process:', str(i+1)+'/'+str(len(train_directory_list)))
 print('训练集划分完成！')
 print('========================')
 print('划分验证集中...')
 for i in range(len(val_directory_list)):
-    if not os.path.exists('../../dataset/validation_data/'+val_directory_list[i]):
-        os.mkdir('../../dataset/validation_data/'+val_directory_list[i])
+    if not os.path.exists('../../dataset/validation_data/'+val_label_list[i]):
+        os.mkdir('../../dataset/validation_data/'+val_label_list[i])
     with open('../../dataset/CASIA-WebFace-Align-96/'+val_directory_list[i]+'/'+val_name_list[i], 'rb') as fc:
         f = fc.read()   # 复制
-        with open('../../dataset/validation_data/'+val_directory_list[i]+'/'+val_name_list[i], 'wb') as fp:
+        with open('../../dataset/validation_data/'+val_label_list[i]+'/'+val_name_list[i], 'wb') as fp:
             fp.write(f) # 粘贴
     print('Process:', str(i+1)+'/'+str(len(val_directory_list)))
 print('验证集划分完成！')
