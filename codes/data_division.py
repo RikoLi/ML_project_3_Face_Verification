@@ -52,10 +52,9 @@ print('划分验证集中...')
 for i in range(len(val_directory_list)):
     if not os.path.exists('../../dataset/validation_data/'+val_directory_list[i]):
         os.mkdir('../../dataset/validation_data/'+val_directory_list[i])
-    os.mkdir('../../dataset/validation_data/'+val_directory_list[i])
     with open('../../dataset/CASIA-WebFace-Align-96/'+val_directory_list[i]+'/'+val_name_list[i], 'rb') as fc:
         f = fc.read()   # 复制
-        with open('../../dataset/val_data/'+val_directory_list[i]+'/'+val_name_list[i], 'wb') as fp:
+        with open('../../dataset/validation_data/'+val_directory_list[i]+'/'+val_name_list[i], 'wb') as fp:
             fp.write(f) # 粘贴
     print('Process:', str(i+1)+'/'+str(len(val_directory_list)))
 print('验证集划分完成！')
