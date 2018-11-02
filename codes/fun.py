@@ -1,5 +1,5 @@
 '''
-函数定义
+函数、类定义
 '''
 
 import matplotlib.pyplot as plt
@@ -12,8 +12,7 @@ import numpy as np
 # pic = dict_list[0]['pic_path']
 # fun.showPic(pic)
 
-
-
+'''Functions'''
 # 显示数据集中某张图片
 def showPic(pic_path):
     '''
