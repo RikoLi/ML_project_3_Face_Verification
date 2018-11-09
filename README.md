@@ -124,8 +124,8 @@ path2matr(pic_path)
 1. VGG风格的网络
 1. ResNet风格的网络
 
-VGG：```genVGG(pic_classes)```
-ResNet：```genResnet(pic_classes)```
+* VGG：```genVGG(pic_classes)```
+* ResNet：```genResnet(pic_classes)```
 
 只是把网络搭建的过程藏起来了，没有按照生成一个指定size的网络的思想去写，偷个懒。两个函数都会返回一个Keras的Model对象，VGG的是Sequential Model。此外，两个函数内调用了```keras.utils```的```plot_model()```函数，用于生成网络结构图。
 
