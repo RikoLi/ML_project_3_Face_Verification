@@ -1,7 +1,11 @@
 '''
 函数、类定义
 '''
-
+import keras
+from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, Input, add, Activation, AvgPool2D
+from keras.models import Sequential, Model
+from keras.preprocessing.image import *
+from keras.utils import plot_model
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
@@ -11,6 +15,78 @@ import numpy as np
 # dict_list = fun.genDataDict(index_list)
 # pic = dict_list[0]['pic_path']
 # fun.showPic(pic)
+'''Net generators'''
+# 生成VGG16网络
+def genVGG(pic_classes):
+    '''
+    生成一个经典的VGG网络模型\n
+    return: Keras Sequential模型
+    pic_classes: 输出种类数
+    '''
+    model = Sequential()
+    model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(92, 92, 3)))
+    model.add(Conv2D(32, (3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(keras.layers.BatchNormalization())
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(Flatten())
+    model.add(keras.layers.BatchNormalization())
+    model.add(Dense(256, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(pic_classes, activation='softmax'))
+    plot_model(model, 'vgg16.png')
+
+    return model
+
+# 生成ResNet网络
+def genResnet(pic_classes):
+    '''
+    生成一个ResNet\n
+    return: Keras模型
+    '''
+    img_input = Input(batch_shape=(None, 92, 92, 3))
+    conv1_1 = Conv2D(64, (7, 7), strides=2, activation='relu')(img_input)
+    pool1_1 = MaxPooling2D((3, 3), strides=2)(conv1_1)
+
+    conv2_1 = Conv2D(64, (3, 3), activation='relu', padding='same')(pool1_1)
+    conv2_2 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv2_1)
+    merge1 = add([pool1_1, conv2_2])
+    merge1 = Activation('relu')(merge1)
+    conv2_3 = Conv2D(64, (3, 3), activation='relu', padding='same')(merge1)
+    conv2_4 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv2_3)
+
+    conv3_1 = Conv2D(128, (3, 3), activation='relu', padding='same')(conv2_4)
+    conv3_2 = Conv2D(128, (3, 3), activation='relu', padding='same')(conv3_1)
+    conv3_3 = Conv2D(64, (1, 1), activation='relu', padding='same')(conv3_2)
+    merge2 = add([conv2_4, conv3_3])
+    merge2 = Activation('relu')(merge2)
+    merge2 = Conv2D(128, (1, 1), activation='relu', padding='same')(merge2)
+    conv3_4 = Conv2D(128, (3, 3), activation='relu', padding='same')(merge2)
+    conv3_5 = Conv2D(128, (3, 3), activation='relu', padding='same')(conv3_4)
+    merge3 = add([conv3_5, merge2])
+    merge3 = Activation('relu')(merge3)
+
+    merge3 = Conv2D(256, (1, 1), activation='relu', padding='same')(merge3)
+    conv4_1 = Conv2D(256, (3, 3), activation='relu', padding='same')(merge3)
+    conv4_2 = Conv2D(256, (3, 3), activation='relu', padding='same')(conv4_1)
+    merge4 = add([conv4_2, merge3])
+    merge4 = Activation('relu')(merge4)
+
+    avg_pool = AvgPool2D()(merge4)
+    avg_pool = Flatten()(avg_pool)
+
+    fc = Dense(pic_classes, activation='softmax')(avg_pool)
+    
+    model = Model(inputs=img_input, outputs=fc)
+    
+    plot_model(model, 'resnet.png')
+    return model
 
 '''Functions'''
 # 显示数据集中某张图片
