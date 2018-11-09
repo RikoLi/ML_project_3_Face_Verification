@@ -3,6 +3,7 @@
 '''
 import keras
 from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, Input, add, Activation, AvgPool2D
+from keras.layers import BatchNormalization
 from keras.models import Sequential, Model
 from keras.preprocessing.image import *
 from keras.utils import plot_model
@@ -15,6 +16,7 @@ import numpy as np
 # dict_list = fun.genDataDict(index_list)
 # pic = dict_list[0]['pic_path']
 # fun.showPic(pic)
+
 '''Net generators'''
 # 生成VGG16网络
 def genVGG(pic_classes):
@@ -24,21 +26,30 @@ def genVGG(pic_classes):
     pic_classes: 输出种类数
     '''
     model = Sequential()
-    model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(92, 92, 3)))
-    model.add(Conv2D(32, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-
-    model.add(keras.layers.BatchNormalization())
-    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Conv2D(64, (3, 3), activation='relu', input_shape=(64, 64, 3)))
     model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
+    model.add(Dropout(0.4))
 
+    model.add(BatchNormalization())
+
+    model.add(Conv2D(128, (3, 3), activation='relu'))
+    model.add(Conv2D(128, (3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.4))
+    
+    model.add(BatchNormalization())
+
+    model.add(Conv2D(256, (3, 3), activation='relu'))
+    model.add(Conv2D(256, (3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.4))
+
+    model.add(BatchNormalization())
+    
     model.add(Flatten())
-    model.add(keras.layers.BatchNormalization())
-    model.add(Dense(256, activation='relu'))
-    model.add(Dropout(0.5))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dense(512, activation='relu'))
     model.add(Dense(pic_classes, activation='softmax'))
     plot_model(model, 'vgg16.png')
 
@@ -50,7 +61,7 @@ def genResnet(pic_classes):
     生成一个ResNet\n
     return: Keras模型
     '''
-    img_input = Input(batch_shape=(None, 92, 92, 3))
+    img_input = Input(batch_shape=(None, 64, 64, 3))
     conv1_1 = Conv2D(64, (7, 7), strides=2, activation='relu')(img_input)
     pool1_1 = MaxPooling2D((3, 3), strides=2)(conv1_1)
 

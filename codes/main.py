@@ -7,8 +7,8 @@ import numpy as np
 from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, Input, add, Activation, AvgPool2D
 from keras.models import Sequential, Model
 from keras.preprocessing.image import *
-from keras.callbacks import TensorBoard
 from keras.optimizers import SGD
+from keras.callbacks import TensorBoard
 
 # 初始化Keras图像生成器IDG
 train_IDG = ImageDataGenerator(
@@ -29,7 +29,7 @@ pic_classes = 10574                     # 规定图片种类
 print('生成训练集中...')
 train_generator = train_IDG.flow_from_directory(
     directory='../../dataset/train_data',
-    target_size=(92, 92),
+    target_size=(64, 64),
     color_mode='rgb',
     classes=None,
     class_mode='categorical',
@@ -43,7 +43,7 @@ print('========================')
 print('生成验证集中...')
 validation_generator = val_IDG.flow_from_directory(
     directory='../../dataset/validation_data',
-    target_size=(92, 92),
+    target_size=(64, 64),
     color_mode='rgb',
     classes=None,
     class_mode='categorical',
@@ -58,15 +58,15 @@ model = fun.genVGG(pic_classes)
 # os.system('pause')
 
 # 训练
-sgd = SGD(lr=0.002, momentum=0.9, decay=0.1, nesterov=True)
+sgd = SGD(lr=0.001, momentum=0.95, decay=1e-6, nesterov=True)
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 model.fit_generator(
     train_generator,
     steps_per_epoch=6770,
-    epochs=50,
+    epochs=15,
     verbose=1,
     validation_data=validation_generator,
-    validation_steps=200
+    validation_steps=331
 )
 
 model.save('model.hdf5')
