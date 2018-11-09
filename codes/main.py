@@ -2,13 +2,13 @@
 主函数体，用于整个流程脚本的编写
 '''
 import os
-import fun
+from fun import *
 import numpy as np
 from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, Input, add, Activation, AvgPool2D
 from keras.models import Sequential, Model
 from keras.preprocessing.image import *
-from keras.optimizers import SGD
-from keras.callbacks import TensorBoard
+from keras.optimizers import SGD, Adam
+from keras.callbacks import TensorBoard, ModelCheckpoint
 
 # 初始化Keras图像生成器IDG
 train_IDG = ImageDataGenerator(
@@ -54,19 +54,22 @@ print('Done!')
 print('========================')
 
 # 建立网络
-model = fun.genVGG(pic_classes)
+model = genVGG(pic_classes)
+model = genResnet(pic_classes)
 # os.system('pause')
 
 # 训练
-sgd = SGD(lr=0.001, momentum=0.95, decay=1e-6, nesterov=True)
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+# sgd = SGD(lr=0.001, momentum=0.95, decay=1e-6, nesterov=True)
+adam = Adam(lr=0.01)
+model.compile(optimizer=adam, loss='categorical_crossentropy', metrics=['accuracy'])
 model.fit_generator(
     train_generator,
     steps_per_epoch=6770,
     epochs=15,
     verbose=1,
     validation_data=validation_generator,
-    validation_steps=331
+    validation_steps=331,
+    callbacks=[ModelCheckpoint('./checkpoint_model.hdf5', verbose=1, save_best_only=True)]
 )
 
 model.save('model.hdf5')

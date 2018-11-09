@@ -11,14 +11,9 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
 
-# 接口使用样例
-# index_list = fun.readIndex('train.txt')
-# dict_list = fun.genDataDict(index_list)
-# pic = dict_list[0]['pic_path']
-# fun.showPic(pic)
 
 '''Net generators'''
-# 生成VGG16网络
+# 生成VGG网络
 def genVGG(pic_classes):
     '''
     生成一个经典的VGG网络模型\n
@@ -51,7 +46,7 @@ def genVGG(pic_classes):
     model.add(Dense(512, activation='relu'))
     model.add(Dense(512, activation='relu'))
     model.add(Dense(pic_classes, activation='softmax'))
-    plot_model(model, 'vgg16.png')
+    plot_model(model, 'vgg.png')
 
     return model
 
@@ -60,43 +55,42 @@ def genResnet(pic_classes):
     '''
     生成一个ResNet\n
     return: Keras模型
+    pic_classes: 输出种类数
     '''
     img_input = Input(batch_shape=(None, 64, 64, 3))
-    conv1_1 = Conv2D(64, (7, 7), strides=2, activation='relu')(img_input)
-    pool1_1 = MaxPooling2D((3, 3), strides=2)(conv1_1)
+    conv1 = Conv2D(64, (7, 7), strides=2, activation='relu')(img_input)
+    pool1 = MaxPooling2D((3, 3), strides=2)(conv1)
+    pool1 = Dropout(0.3)(pool1)
 
-    conv2_1 = Conv2D(64, (3, 3), activation='relu', padding='same')(pool1_1)
-    conv2_2 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv2_1)
-    merge1 = add([pool1_1, conv2_2])
+    conv2 = Conv2D(64, (3, 3), activation='relu', padding='same')(pool1)
+    conv3 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv2)
+    merge1 = add([pool1, conv3])
     merge1 = Activation('relu')(merge1)
-    conv2_3 = Conv2D(64, (3, 3), activation='relu', padding='same')(merge1)
-    conv2_4 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv2_3)
 
-    conv3_1 = Conv2D(128, (3, 3), activation='relu', padding='same')(conv2_4)
-    conv3_2 = Conv2D(128, (3, 3), activation='relu', padding='same')(conv3_1)
-    conv3_3 = Conv2D(64, (1, 1), activation='relu', padding='same')(conv3_2)
-    merge2 = add([conv2_4, conv3_3])
+    conv4_branch = Conv2D(128, (1, 1), activation='relu', padding='same')(merge1)
+    conv4_branch = BatchNormalization()(conv4_branch)
+    conv4_branch = Dropout(0.3)(conv4_branch)
+    conv4 = Conv2D(128, (3, 3), activation='relu', padding='same')(merge1)
+    conv5 = Conv2D(128, (3, 3), activation='relu', padding='same')(conv4)
+    merge2 = add([conv5, conv4_branch])
     merge2 = Activation('relu')(merge2)
-    merge2 = Conv2D(128, (1, 1), activation='relu', padding='same')(merge2)
-    conv3_4 = Conv2D(128, (3, 3), activation='relu', padding='same')(merge2)
-    conv3_5 = Conv2D(128, (3, 3), activation='relu', padding='same')(conv3_4)
-    merge3 = add([conv3_5, merge2])
+
+    conv6_branch = Conv2D(256, (1, 1), activation='relu', padding='same')(merge2)
+    conv6_branch = BatchNormalization()(conv6_branch)
+    conv6_branch = Dropout(0.3)(conv6_branch)
+    conv6 = Conv2D(256, (3, 3), activation='relu', padding='same')(merge2)
+    conv7 = Conv2D(256, (3, 3), activation='relu', padding='same')(conv6)
+    merge3 = add([conv7, conv6_branch])
     merge3 = Activation('relu')(merge3)
 
-    merge3 = Conv2D(256, (1, 1), activation='relu', padding='same')(merge3)
-    conv4_1 = Conv2D(256, (3, 3), activation='relu', padding='same')(merge3)
-    conv4_2 = Conv2D(256, (3, 3), activation='relu', padding='same')(conv4_1)
-    merge4 = add([conv4_2, merge3])
-    merge4 = Activation('relu')(merge4)
-
-    avg_pool = AvgPool2D()(merge4)
+    avg_pool = AvgPool2D()(merge3)
     avg_pool = Flatten()(avg_pool)
 
     fc = Dense(pic_classes, activation='softmax')(avg_pool)
     
     model = Model(inputs=img_input, outputs=fc)
     
-    plot_model(model, 'resnet.png')
+    plot_model(model, 'resnet.png', show_layer_names=True, show_shapes=True)
     return model
 
 '''Functions'''
@@ -146,3 +140,11 @@ def path2matr(pic_path):
     '''
     img = mpimg.imread('E:/study/grade3_winter/Machine_learning/Homework_Undergraduate/Programming_Assignment/Assignment03_FaceVerification/dataset/CASIA-WebFace-Align-96/'+pic_path)
     return img
+
+
+
+# 接口使用样例
+# index_list = readIndex('train.txt')
+# dict_list = genDataDict(index_list)
+# pic = dict_list[0]['pic_path']
+# showPic(pic)
