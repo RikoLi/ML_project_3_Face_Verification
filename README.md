@@ -3,8 +3,6 @@ For ZJU Machine learning course group work project 3.
 
 > 最后更新2018.11.23，后续更新不再更新README。
 
-> 注：不定期更新，上次更新为2018.11.10。
-
 ---
 
 # 说明
