@@ -12,47 +12,53 @@ def genVGG(pic_classes, shape_tuple):
     '''
     model = Sequential()
     model.add(Conv2D(32, (3, 3), activation='relu', input_shape=shape_tuple))
-    model.add(Conv2D(32, (3, 3), activation='relu'))
-    model.add(Conv2D(32, (3, 3), activation='relu'))
-    model.add(Conv2D(32, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-
     model.add(BatchNormalization())
-
-    model.add(Dropout(0.3))
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-
+    model.add(Conv2D(32, (3, 3), activation='relu', padding='same'))
     model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Dropout(0.5))
     
-    model.add(Dropout(0.3))
-    model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
-    model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
-    model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
 
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
     model.add(BatchNormalization())
-
-    model.add(Dropout(0.3))
-    model.add(Conv2D(256, (3, 3), activation='relu', padding='same'))
-    model.add(Conv2D(256, (3, 3), activation='relu', padding='same'))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
     model.add(BatchNormalization())
-
-    model.add(Dropout(0.3))
-    model.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
-    model.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Dropout(0.5))
+
+
+    model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
+    model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Dropout(0.5))
+
+
+    model.add(Conv2D(256, (3, 3), activation='relu', padding='same'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(256, (3, 3), activation='relu', padding='same'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(256, (3, 3), activation='relu', padding='same'))
+    model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Dropout(0.5))
+
+
+    model.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+    model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Dropout(0.5))
 
     model.add(Flatten())
-    model.add(Dropout(0.3))
-    model.add(Dense(512, activation='relu'))
-    model.add(Dropout(0.3))
-    model.add(Dense(512, activation='relu'))
+    model.add(Dense(1024, activation='relu'))
+    model.add(Dense(1024, activation='relu'))
     model.add(Dense(pic_classes, activation='softmax'))
     return model
 
@@ -229,8 +235,7 @@ def genResvgg(pic_classes, shape_tuple):
     model = Model(inputs=img_input, outputs=output)
     return model
 
-# Easy resnet
-def genEasyres(pic_classes, shape_tuple):
+
     shape_tuple = list(shape_tuple)
     shape_tuple.insert(0, None)
     shape_tuple = tuple(shape_tuple)
@@ -277,4 +282,62 @@ def genEasyres(pic_classes, shape_tuple):
     output = Dense(pic_classes, activation='softmax')(fc)
 
     model = Model(inputs=img_input, outputs=output)
+    return model
+
+# Inception block
+def InceptionBlock(inputLayer):
+    inputLayer = BatchNormalization()(inputLayer)
+    b1_1 = Conv2D(64, (1,1), padding='same', activation='relu')(inputLayer)
+    b1_1 = BatchNormalization()(b1_1)
+    b2_1 = Conv2D(96, (1,1), padding='same', activation='relu')(inputLayer)
+    b2_1 = BatchNormalization()(b2_1)
+    b3_1 = Conv2D(16, (1,1), padding='same', activation='relu')(inputLayer)
+    b3_1 = BatchNormalization()(b3_1)
+    b4_1 = MaxPooling2D(pool_size=(1,1), strides=1, padding='same')(inputLayer)
+
+    b4_1 = Dropout(0.5)(b4_1)
+
+    b2_2 = Conv2D(128, (3,3), padding='same', activation='relu')(b2_1)
+    b2_2 = BatchNormalization()(b2_2)
+    b3_2 = Conv2D(32, (3,3), padding='same', activation='relu')(b3_1)
+    b3_2 = BatchNormalization()(b3_2)
+    b4_2 = Conv2D(32, (1,1), padding='same', activation='relu')(b4_1)
+    b4_2 = BatchNormalization()(b4_2)
+
+    b4_2 = Dropout(0.5)(b4_2)
+
+    b3_3 = Conv2D(32, (3,3), padding='same', activation='relu')(b3_2)
+    b3_3 = BatchNormalization()(b3_3)
+
+    concate = concatenate([b1_1, b2_2, b3_3, b4_2])
+    outputLayer = Activation('relu')(concate)
+    return outputLayer
+
+# Inception
+def genInception(pic_classes, shape_tuple, isDrawPlot):
+    shape_tuple = list(shape_tuple)
+    shape_tuple.insert(0, None)
+    shape_tuple = tuple(shape_tuple)
+
+    img_input = Input(batch_shape=shape_tuple)
+    c1 = Conv2D(32, (3,3), activation='relu')(img_input)
+    c1 = BatchNormalization()(c1)
+    c1 = Conv2D(32, (3,3), activation='relu')(c1)
+    c1 = BatchNormalization()(c1)
+    c1 = Conv2D(64, (3,3), activation='relu', padding='same')(c1)
+    c1 = BatchNormalization()(c1)
+    p1 = MaxPooling2D()(c1)
+
+    i1 = InceptionBlock(p1)
+    i1 = InceptionBlock(i1)
+    i1 = InceptionBlock(i1)
+
+    p2 = MaxPooling2D()(i1)
+    p2 = Flatten()(p2)
+    fc = Dense(512, activation='relu')(p2)
+    output = Dense(pic_classes, activation='softmax')(fc)
+    model = Model(inputs=img_input, outputs=output)
+    if isDrawPlot:
+        plot_model(model, 'inception.png', show_shapes=True, show_layer_names=True)
+    model.summary()
     return model
