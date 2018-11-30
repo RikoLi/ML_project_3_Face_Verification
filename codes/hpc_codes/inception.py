@@ -9,10 +9,10 @@ from hpc_net_def import *
 train_IDG = ImageDataGenerator(
     horizontal_flip=True,
     vertical_flip=False,
-    height_shift_range=0.1,
-    width_shift_range=0.1,
-    rotation_range=90,
-    shear_range=0.2,
+    # height_shift_range=0.1,
+    # width_shift_range=0.1,
+    # rotation_range=90,
+    # shear_range=0.2,
     rescale=1/255
 )
 val_IDG = ImageDataGenerator(rescale=1/255)

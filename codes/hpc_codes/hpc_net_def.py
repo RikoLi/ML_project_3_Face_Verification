@@ -295,16 +295,12 @@ def InceptionBlock(inputLayer):
     b3_1 = BatchNormalization()(b3_1)
     b4_1 = MaxPooling2D(pool_size=(1,1), strides=1, padding='same')(inputLayer)
 
-    b4_1 = Dropout(0.5)(b4_1)
-
     b2_2 = Conv2D(128, (3,3), padding='same', activation='relu')(b2_1)
     b2_2 = BatchNormalization()(b2_2)
     b3_2 = Conv2D(32, (3,3), padding='same', activation='relu')(b3_1)
     b3_2 = BatchNormalization()(b3_2)
     b4_2 = Conv2D(32, (1,1), padding='same', activation='relu')(b4_1)
     b4_2 = BatchNormalization()(b4_2)
-
-    b4_2 = Dropout(0.5)(b4_2)
 
     b3_3 = Conv2D(32, (3,3), padding='same', activation='relu')(b3_2)
     b3_3 = BatchNormalization()(b3_3)
@@ -329,7 +325,11 @@ def genInception(pic_classes, shape_tuple, isDrawPlot):
     p1 = MaxPooling2D()(c1)
 
     i1 = InceptionBlock(p1)
+    i1 = Dropout(0.5)(i1)
     i1 = InceptionBlock(i1)
+    i1 = Dropout(0.5)(i1)
+    i1 = InceptionBlock(i1)
+    i1 = Dropout(0.5)(i1)
     i1 = InceptionBlock(i1)
 
     p2 = MaxPooling2D()(i1)
